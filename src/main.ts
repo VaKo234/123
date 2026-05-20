@@ -21,7 +21,7 @@ export async function run(): Promise<void> {
         lowerCaseFileName === '.tgz' ||
         !lowerCaseFileName.endsWith('.tgz')
       ) {
-        throw new Error(`only .tgz files are supported: ${file}`)
+        throw new Error(`only .tgz files are supported: ${normalizedFile}`)
       }
     }
 

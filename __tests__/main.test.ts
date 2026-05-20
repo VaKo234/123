@@ -106,7 +106,7 @@ describe('main.ts', () => {
     expect(wait).not.toHaveBeenCalled()
   })
 
-  it('Sets a failed status for invalid .tgz filename', async () => {
+  it('Sets a failed status for file named exactly .tgz', async () => {
     core.getInput.mockImplementation((name: string) =>
       name === 'milliseconds' ? '500' : '.tgz'
     )

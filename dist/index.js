@@ -28037,7 +28037,7 @@ async function run() {
             if (!fileName ||
                 lowerCaseFileName === '.tgz' ||
                 !lowerCaseFileName.endsWith('.tgz')) {
-                throw new Error(`only .tgz files are supported: ${file}`);
+                throw new Error(`only .tgz files are supported: ${normalizedFile}`);
             }
         }
         // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
