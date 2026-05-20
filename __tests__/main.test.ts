@@ -20,7 +20,9 @@ const { run } = await import('../src/main.js')
 describe('main.ts', () => {
   beforeEach(() => {
     // Set the action's inputs as return values from core.getInput().
-    core.getInput.mockImplementation(() => '500')
+    core.getInput.mockImplementation((name: string) =>
+      name === 'milliseconds' ? '500' : ''
+    )
 
     // Mock the wait function so that it does not actually wait.
     wait.mockImplementation(() => Promise.resolve('done!'))
@@ -31,6 +33,10 @@ describe('main.ts', () => {
   })
 
   it('Sets the time output', async () => {
+    core.getInput.mockImplementation((name: string) =>
+      name === 'milliseconds' ? '500' : 'archive.tgz'
+    )
+
     await run()
 
     // Verify the time output was set.
@@ -58,5 +64,19 @@ describe('main.ts', () => {
       1,
       'milliseconds is not a number'
     )
+  })
+
+  it('Sets a failed status for unsupported file input', async () => {
+    core.getInput.mockImplementation((name: string) =>
+      name === 'milliseconds' ? '500' : 'archive.zip'
+    )
+
+    await run()
+
+    expect(core.setFailed).toHaveBeenNthCalledWith(
+      1,
+      'only .tgz files are supported'
+    )
+    expect(wait).not.toHaveBeenCalled()
   })
 })

@@ -28029,6 +28029,10 @@ async function wait(milliseconds) {
 async function run() {
     try {
         const ms = getInput('milliseconds');
+        const file = getInput('file');
+        if (file && !file.toLowerCase().endsWith('.tgz')) {
+            throw new Error('only .tgz files are supported');
+        }
         // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
         debug(`Waiting ${ms} milliseconds ...`);
         // Log the current timestamp, wait, then log the new timestamp
