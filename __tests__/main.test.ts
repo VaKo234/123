@@ -77,6 +77,21 @@ describe('main.ts', () => {
     expect(core.setFailed).not.toHaveBeenCalled()
   })
 
+  it('Allows uppercase .tgz file input', async () => {
+    core.getInput.mockImplementation((name: string) =>
+      name === 'milliseconds' ? '500' : 'archive.TGZ'
+    )
+
+    await run()
+
+    expect(core.setOutput).toHaveBeenNthCalledWith(
+      1,
+      'time',
+      expect.stringMatching(/^\d{2}:\d{2}:\d{2}/)
+    )
+    expect(core.setFailed).not.toHaveBeenCalled()
+  })
+
   it('Sets a failed status for unsupported file input', async () => {
     core.getInput.mockImplementation((name: string) =>
       name === 'milliseconds' ? '500' : 'archive.zip'
@@ -86,7 +101,35 @@ describe('main.ts', () => {
 
     expect(core.setFailed).toHaveBeenNthCalledWith(
       1,
-      'only .tgz files are supported'
+      'only .tgz files are supported: archive.zip'
+    )
+    expect(wait).not.toHaveBeenCalled()
+  })
+
+  it('Sets a failed status for invalid .tgz filename', async () => {
+    core.getInput.mockImplementation((name: string) =>
+      name === 'milliseconds' ? '500' : '.tgz'
+    )
+
+    await run()
+
+    expect(core.setFailed).toHaveBeenNthCalledWith(
+      1,
+      'only .tgz files are supported: .tgz'
+    )
+    expect(wait).not.toHaveBeenCalled()
+  })
+
+  it('Sets a failed status for .tgz substring in the middle', async () => {
+    core.getInput.mockImplementation((name: string) =>
+      name === 'milliseconds' ? '500' : 'archive.tgz.bak'
+    )
+
+    await run()
+
+    expect(core.setFailed).toHaveBeenNthCalledWith(
+      1,
+      'only .tgz files are supported: archive.tgz.bak'
     )
     expect(wait).not.toHaveBeenCalled()
   })

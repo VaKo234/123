@@ -10,9 +10,19 @@ export async function run(): Promise<void> {
   try {
     const ms: string = core.getInput('milliseconds')
     const file: string = core.getInput('file')
+    const normalizedFile = file.trim()
 
-    if (file && !file.toLowerCase().endsWith('.tgz')) {
-      throw new Error('only .tgz files are supported')
+    if (normalizedFile) {
+      const fileName = normalizedFile.split(/[\\/]/).pop() ?? ''
+      const lowerCaseFileName = fileName.toLowerCase()
+
+      if (
+        !fileName ||
+        lowerCaseFileName === '.tgz' ||
+        !lowerCaseFileName.endsWith('.tgz')
+      ) {
+        throw new Error(`only .tgz files are supported: ${file}`)
+      }
     }
 
     // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
