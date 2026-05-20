@@ -33,10 +33,6 @@ describe('main.ts', () => {
   })
 
   it('Sets the time output', async () => {
-    core.getInput.mockImplementation((name: string) =>
-      name === 'milliseconds' ? '500' : 'archive.tgz'
-    )
-
     await run()
 
     // Verify the time output was set.
@@ -64,6 +60,21 @@ describe('main.ts', () => {
       1,
       'milliseconds is not a number'
     )
+  })
+
+  it('Allows .tgz file input', async () => {
+    core.getInput.mockImplementation((name: string) =>
+      name === 'milliseconds' ? '500' : 'archive.tgz'
+    )
+
+    await run()
+
+    expect(core.setOutput).toHaveBeenNthCalledWith(
+      1,
+      'time',
+      expect.stringMatching(/^\d{2}:\d{2}:\d{2}/)
+    )
+    expect(core.setFailed).not.toHaveBeenCalled()
   })
 
   it('Sets a failed status for unsupported file input', async () => {
