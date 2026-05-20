@@ -101,7 +101,7 @@ describe('main.ts', () => {
 
     expect(core.setFailed).toHaveBeenNthCalledWith(
       1,
-      'only .tgz files are supported: archive.zip'
+      'Only .tgz files are supported: archive.zip'
     )
     expect(wait).not.toHaveBeenCalled()
   })
@@ -115,7 +115,7 @@ describe('main.ts', () => {
 
     expect(core.setFailed).toHaveBeenNthCalledWith(
       1,
-      'only .tgz files are supported: .tgz'
+      'Only .tgz files are supported: .tgz'
     )
     expect(wait).not.toHaveBeenCalled()
   })
@@ -129,7 +129,7 @@ describe('main.ts', () => {
 
     expect(core.setFailed).toHaveBeenNthCalledWith(
       1,
-      'only .tgz files are supported: archive.tgz.bak'
+      'Only .tgz files are supported: archive.tgz.bak'
     )
     expect(wait).not.toHaveBeenCalled()
   })

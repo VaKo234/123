@@ -9,11 +9,11 @@ import { wait } from './wait.js'
 export async function run(): Promise<void> {
   try {
     const ms: string = core.getInput('milliseconds')
-    const file: string = core.getInput('file')
-    const normalizedFile = file.trim()
+    const fileInput: string = core.getInput('file')
+    const filePath = fileInput.trim()
 
-    if (normalizedFile) {
-      const fileName = normalizedFile.split(/[\\/]/).pop() ?? ''
+    if (filePath) {
+      const fileName = filePath.split(/[\\/]/).pop() ?? ''
       const lowerCaseFileName = fileName.toLowerCase()
 
       if (
@@ -21,7 +21,7 @@ export async function run(): Promise<void> {
         lowerCaseFileName === '.tgz' ||
         !lowerCaseFileName.endsWith('.tgz')
       ) {
-        throw new Error(`only .tgz files are supported: ${normalizedFile}`)
+        throw new Error(`Only .tgz files are supported: ${filePath}`)
       }
     }
 

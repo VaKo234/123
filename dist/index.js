@@ -28029,15 +28029,15 @@ async function wait(milliseconds) {
 async function run() {
     try {
         const ms = getInput('milliseconds');
-        const file = getInput('file');
-        const normalizedFile = file.trim();
-        if (normalizedFile) {
-            const fileName = normalizedFile.split(/[\\/]/).pop() ?? '';
+        const fileInput = getInput('file');
+        const filePath = fileInput.trim();
+        if (filePath) {
+            const fileName = filePath.split(/[\\/]/).pop() ?? '';
             const lowerCaseFileName = fileName.toLowerCase();
             if (!fileName ||
                 lowerCaseFileName === '.tgz' ||
                 !lowerCaseFileName.endsWith('.tgz')) {
-                throw new Error(`only .tgz files are supported: ${normalizedFile}`);
+                throw new Error(`Only .tgz files are supported: ${filePath}`);
             }
         }
         // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
