@@ -9,6 +9,21 @@ import { wait } from './wait.js'
 export async function run(): Promise<void> {
   try {
     const ms: string = core.getInput('milliseconds')
+    const fileInput: string = core.getInput('file')
+    const filePath = fileInput.trim()
+
+    if (filePath) {
+      const fileName = filePath.split(/[\\/]/).pop() ?? ''
+      const lowerCaseFileName = fileName.toLowerCase()
+
+      if (
+        !fileName ||
+        lowerCaseFileName === '.tgz' ||
+        !lowerCaseFileName.endsWith('.tgz')
+      ) {
+        throw new Error(`Only .tgz files are supported: ${filePath}`)
+      }
+    }
 
     // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
     core.debug(`Waiting ${ms} milliseconds ...`)

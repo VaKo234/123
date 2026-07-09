@@ -20,7 +20,9 @@ const { run } = await import('../src/main.js')
 describe('main.ts', () => {
   beforeEach(() => {
     // Set the action's inputs as return values from core.getInput().
-    core.getInput.mockImplementation(() => '500')
+    core.getInput.mockImplementation((name: string) =>
+      name === 'milliseconds' ? '500' : ''
+    )
 
     // Mock the wait function so that it does not actually wait.
     wait.mockImplementation(() => Promise.resolve('done!'))
@@ -58,5 +60,77 @@ describe('main.ts', () => {
       1,
       'milliseconds is not a number'
     )
+  })
+
+  it('Allows .tgz file input', async () => {
+    core.getInput.mockImplementation((name: string) =>
+      name === 'milliseconds' ? '500' : 'archive.tgz'
+    )
+
+    await run()
+
+    expect(core.setOutput).toHaveBeenNthCalledWith(
+      1,
+      'time',
+      expect.stringMatching(/^\d{2}:\d{2}:\d{2}/)
+    )
+    expect(core.setFailed).not.toHaveBeenCalled()
+  })
+
+  it('Allows uppercase .tgz file input', async () => {
+    core.getInput.mockImplementation((name: string) =>
+      name === 'milliseconds' ? '500' : 'archive.TGZ'
+    )
+
+    await run()
+
+    expect(core.setOutput).toHaveBeenNthCalledWith(
+      1,
+      'time',
+      expect.stringMatching(/^\d{2}:\d{2}:\d{2}/)
+    )
+    expect(core.setFailed).not.toHaveBeenCalled()
+  })
+
+  it('Sets a failed status for unsupported file input', async () => {
+    core.getInput.mockImplementation((name: string) =>
+      name === 'milliseconds' ? '500' : 'archive.zip'
+    )
+
+    await run()
+
+    expect(core.setFailed).toHaveBeenNthCalledWith(
+      1,
+      'Only .tgz files are supported: archive.zip'
+    )
+    expect(wait).not.toHaveBeenCalled()
+  })
+
+  it('Sets a failed status for file named exactly .tgz', async () => {
+    core.getInput.mockImplementation((name: string) =>
+      name === 'milliseconds' ? '500' : '.tgz'
+    )
+
+    await run()
+
+    expect(core.setFailed).toHaveBeenNthCalledWith(
+      1,
+      'Only .tgz files are supported: .tgz'
+    )
+    expect(wait).not.toHaveBeenCalled()
+  })
+
+  it('Sets a failed status for .tgz substring in the middle', async () => {
+    core.getInput.mockImplementation((name: string) =>
+      name === 'milliseconds' ? '500' : 'archive.tgz.bak'
+    )
+
+    await run()
+
+    expect(core.setFailed).toHaveBeenNthCalledWith(
+      1,
+      'Only .tgz files are supported: archive.tgz.bak'
+    )
+    expect(wait).not.toHaveBeenCalled()
   })
 })
